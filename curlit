@@ -1,0 +1,13 @@
+#!/bin/sh
+echo $1
+case "$1" in
+	login)
+		echo "Login"
+		curl -v -d "username=admin&password=password" http://martynbristow.no-ip.org/Projects/bar-manager/index.php/login > /dev/null
+		;;
+	dashboard)
+		echo "Dashboard"
+		echo "Session $2"
+		curl -v -b "ci_session=$2" http://martynbristow.no-ip.org/Projects/bar-manager/index.php/dashboard
+		;;
+esac
