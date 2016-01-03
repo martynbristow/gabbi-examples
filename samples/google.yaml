@@ -1,7 +1,32 @@
+# Various tests of Google
 tests:
 
-- name: Google Redirect
-  desc: Test for Googles redirect
+- name: Google Issues Redirect
+  desc: Test for a redirect from google.com
   method: GET
   url: http://google.com
-  status: 302
+  status: 301||302
+
+tests:
+
+- name: Google Redirect Resolves OK
+  desc: Follow the redirect from Google verify we get a valid page
+  method: GET
+  redirects: True
+  url: http://google.co.uk
+  status: 200
+  response_headers:
+    Set-Cookie: /.../
+    Server: gws
+    Content-Type: text/html; charset=ISO-8859-1
+
+- name: Uploads forbidden
+  desc: POST some data to Google.com and see we get rejected
+  method: POST
+  url: http://google.com
+  data: "user=me"
+  status: 405
+  response_headers:
+    Server: gws
+    Content-Type: text/html; charset=UTF-8
+    Allow: GET, HEAD

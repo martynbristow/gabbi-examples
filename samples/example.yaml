@@ -1,7 +1,7 @@
 tests:
 
-- name: Google Redirect
-  desc: Test for Googles redirect
+- name: Example.com
+  desc: Example.com exists
   method: GET
-  url: http://google.com
-  status: 302
+  url: http://example.com
+  status: 200

@@ -1,7 +1,0 @@
-tests:
-
-- name: Google Redirect
-  desc: Test for Googles redirect
-  method: GET
-  url: http://google.com
-  status: 302
