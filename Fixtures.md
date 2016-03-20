@@ -2,26 +2,11 @@
 
 ## Authentication
 ```
-""" Setup test fixtures
-"""
-
 import cookielib
 import urllib
 import urllib2
 import os
 from gabbi import fixture
-import ConfigParser
-
-config = ConfigParser.ConfigParser()
-config.read('settings.ini') # Load the settings.ini file
-
-default = config.get('Tests', 'default')
-
-host_info = dict(config.items(default))
-login_url = "http://%s/%s/login" % (host_info['host'], host_info['prefix'])
-
-auth_info = dict(config.items('Auth'))
-param = {'username': auth_info['username'], 'password':  auth_info['password']}
 
 print "Setting Up Fixture"
 print login_url
@@ -52,4 +37,19 @@ class AuthenticationFixture(fixture.GabbiFixture):
         
     def stop_fixture(self):
         pass
+```
+Optionally you may wish to store your settings in a settings.ini like I have:
+```
+import ConfigParser
+
+config = ConfigParser.ConfigParser()
+config.read('settings.ini') # Load the settings.ini file
+
+default = config.get('Tests', 'default')
+
+host_info = dict(config.items(default))
+login_url = "http://%s/%s/login" % (host_info['host'], host_info['prefix'])
+
+auth_info = dict(config.items('Auth'))
+param = {'username': auth_info['username'], 'password':  auth_info['password']}
 ```
