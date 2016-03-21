@@ -1,13 +1,19 @@
-""" Unit Testing for Simple HTTP Server
+""" UnitTests for the SimpleHTTPServer
 """
 import mock
 import unittest
 
-class test_HTTP_SERVER(unittest.TestCase):
+class TestHTTPServerHandler(unittest.TestCase):
     """
     """
-    def test_post(self):
+    def setUp(self):
+        self.handler = Mock()
+    def test_do_GET(self):
         pass
+    def test_do_POST(self):
+        pass
+    def tearDown(self):
+        self.handler()
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,8 @@
-""" Simple HTTP Server
+""" A Simple HTTP Server in Python
+
+This is a simple HTTP server designed to be used with gabbi-examples
+It should only use the Python standard library to avoid needing to install dependancies
+Its not designed to server real websites, only a demonstration for testing
 """
 import BaseHTTPServer
 import cgi
@@ -7,6 +11,7 @@ import sys
 import json
 import ConfigParser
 import Cookie
+import logging
 
 MESSAGES = [
     "That's as maybe, it's still a frog.",
@@ -30,32 +35,38 @@ LOGIN_FORM = """
 <div><input name="Submit" type="submit" /></div>
 </form>
 """
- 
-def load_settings():
-    """ Load Settings from settings.ini
+URLS = {"page": 'Page', "login":'Login', "api":'API'}
+LIST_ITEM = "<li>%s</li>"
+LINK = "<a href='{url}'>{text}</a>"
+
+def load_settings(filename="settings.ini"):
+    """ Load the server settings from the file `filename`
     """
+
     config = ConfigParser.ConfigParser()
-    config.read('settings.ini') # Load the settings.ini file
-    settings = {}
-    server = dict(config.items('Server'))
-    auth = dict(config.items('Auth'))
-    settings['port'] = int(server['port'])
+    config.read(filename) # Load the settings.ini file
+    settings = {
+        'server': dict(config.items('Server'))
+        'auth': dict(config.items('Auth'))
+        'port': int(server['port'])
+    }
     port = ":%s" % server['port'] if server['port'] else ""
     settings['login_url'] = "http://%s%s/%s/login" % (server['host'], port, server['prefix'])
     settings['param'] = {'username': auth['admin_username'], 'password':  auth['admin_password']}
     return settings
 
-URLS = {"page": 'Page', "login":'Login', "api":'API'}
-LIST_ITEM = "<li>%s</li>"
-LINK = "<a href='{url}'>{text}</a>"
+
+
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
-    """ Server
+    """ HTTP Request Handler
     """
+
     def do_GET(self):
-        """ GET
+        """ Process a HTTP Get Request
         """
+
         uri = self.path.split('/')
-        print uri
+        logging.debug('Requested URI: %s', uri)
         if len(uri) == 1:
             self.send_response(200)
             self.send_header("Content-type", "text/html")
@@ -98,8 +109,6 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            print "login"
-            print "show form"
             self.output = HTML % LOGIN_FORM
 
         else:
@@ -117,7 +126,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             sys.stdout = stdout # restore
 
     def parse_POST(self):
-        """ Collate HTTP POST
+        """ Parse a HTTP POST request
         """
 
         ctype, pdict = cgi.parse_header(self.headers['content-type'])
@@ -133,7 +142,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         return postvars
 
     def do_POST(self):
-        """ curl -v --data "username=admin&password=password" http://localhost:8000/login
+        """ Recieve a post request
+        curl -v --data "username=admin&password=password" http://localhost:8000/login
         """
         postvars = self.parse_POST()
         if self.path == "/login":
@@ -156,8 +166,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                 sys.stdout = stdout # restore
 
 if __name__ == '__main__':
-    settings = load_settings()
-    httpd = BaseHTTPServer.HTTPServer(("", settings['port']), Handler)
-    print "Serving content on port", settings['port']
+    server_settings = load_settings()
+    httpd = BaseHTTPServer.HTTPServer(("", server_settings['port']), Handler)
+    logging.info("Serving content on port", server_settings['port'])
     httpd.serve_forever()
     run()
