@@ -46,20 +46,24 @@ def load_settings(filename="settings.ini"):
     config = ConfigParser.ConfigParser()
     config.read(filename) # Load the settings.ini file
     settings = {
-        'server': dict(config.items('Server'))
-        'auth': dict(config.items('Auth'))
-        'port': int(server['port'])
+        'server': dict(config.items('Server')),
+        'auth': dict(config.items('Auth')),
     }
-    port = ":%s" % server['port'] if server['port'] else ""
-    settings['login_url'] = "http://%s%s/%s/login" % (server['host'], port, server['prefix'])
-    settings['param'] = {'username': auth['admin_username'], 'password':  auth['admin_password']}
+    settings['server']['port'] = int(settings['server']['port'])
+    port = ":%s" % settings['server']['port'] if settings['server']['port'] else ""
+    settings['login_url'] = "http://%s%s/%s/login" % (settings['server']['host'], settings['server']['port'], settings['server']['prefix'])
+    settings['param'] = {'username': settings['auth']['admin_username'], 'password':  settings['auth']['admin_password']}
     return settings
 
 
 
 class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
     """ HTTP Request Handler
+   Add session http://michelanders.blogspot.co.uk/2011/10/managing-session-id-with-cookies.html
     """
+
+    def __init__(self):
+       super(Handler).__init__()
 
     def do_GET(self):
         """ Process a HTTP Get Request
@@ -167,7 +171,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     server_settings = load_settings()
-    httpd = BaseHTTPServer.HTTPServer(("", server_settings['port']), Handler)
-    logging.info("Serving content on port", server_settings['port'])
+    httpd = BaseHTTPServer.HTTPServer(("127.0.0.1", server_settings['server']['port']), Handler)
+    logging.info("Serving content on port", server_settings['server']['port'])
     httpd.serve_forever()
     run()
