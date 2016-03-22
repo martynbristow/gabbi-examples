@@ -13,7 +13,7 @@ This tutorial and examples are written to be fairly accesible, I don't assume yo
 
 ## Contents
  * samples - Some very simple tests
- * tutorials - This is an empty folde for you to store your tutorials in
+ * tutorials - This is an empty folder for you to store your tutorials in
  * api - Minimal set of tests to run against an API
 
 ## Setting Up
