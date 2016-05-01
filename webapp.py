@@ -1,22 +1,24 @@
-"""Test Loader
-python -m unittest -v webapp
+""" Webapp
 """
 
 import os
 import sys
 from gabbi import driver
+import ConfigParser
 
+settings = 'settings.ini'
 name = __file__.split('.')[0]
 
-import ConfigParser
 config = ConfigParser.ConfigParser()
-config.read('%s.ini' % name) # Load the settings.ini file
+config.read('%s' % settings)
 
-default = config.get('Tests','default')
+#default = config.get('Server', 'default')
+default="Server"
 data = dict(config.items(default))
 
 def load_tests(loader, tests, pattern):
-    """Provide a TestSuite to the discovery process."""
+    """Provide a TestSuite to the discovery process
+    """
     
     test_dir = os.path.join(os.path.dirname(__file__), name)
     return driver.build_tests(test_dir, loader,

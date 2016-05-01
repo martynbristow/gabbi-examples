@@ -5,7 +5,8 @@
 ## Requires
 ### markdown: sudo pip install markdown
 
-
+TESTS 			:= api.py samples.py webapp.py
+UNITTESTS       := test_server.py
 BUILD_DIR		:= _build
 
 SOURCES			:= $(wildcard *.md)
@@ -15,7 +16,7 @@ REQUIREPIP      := markdown
 
 README          := README.md
 
-.PHONY: all docs install clean help debug $(SOURCES)
+.PHONY: all docs install clean help debug $(SOURCES) tests
 
 all: clean docs readme
 
@@ -60,8 +61,15 @@ install:
 	pip install markdown --user
 	pip install gabbi --user
 
-tests:
-	curlit
 testmd:
 	@echo "Test Markdown is installed"
 	python -c "import markdown"
+
+unittests:
+	python $(UNITTESTS)
+%.py:
+	@echo ""
+$(TESTS):%.py
+	python $@
+tests: $(TESTS)
+	

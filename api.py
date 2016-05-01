@@ -1,18 +1,20 @@
-"""Test Loader
-python -m unittest -v webapp
+""" API Tests
+Test a JSON API
 """
 
 import os
 import sys
+import ConfigParser
 from gabbi import driver
 
+settings = 'settings.ini'
 name = __file__.split('.')[0]
 
-import ConfigParser
 config = ConfigParser.ConfigParser()
-config.read('%s.ini' % name) # Load the settings.ini file
-
-default = config.get('Tests','default')
+config.read('%s' % settings)
+print config.sections()
+#default = config.get('Server','default')
+default="Server"
 data = dict(config.items(default))
 
 def load_tests(loader, tests, pattern):

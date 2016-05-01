@@ -8,10 +8,13 @@ import os
 from gabbi import fixture
 import ConfigParser
 
-config = ConfigParser.ConfigParser()
-config.read('settings.ini') # Load the settings.ini file
+setings = 'settings.ini'
+name = __file__.split('.')[0]
 
-default = config.get('Tests', 'default')
+config = ConfigParser.ConfigParser()
+config.read('%s' % settings)
+
+default = config.get('Server', 'default')
 
 host_info = dict(config.items(default))
 login_url = "http://%s/%s/login" % (host_info['host'], host_info['prefix'])

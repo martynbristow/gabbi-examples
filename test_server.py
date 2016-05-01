@@ -7,7 +7,7 @@ class TestHTTPServerHandler(unittest.TestCase):
     """
     """
     def setUp(self):
-        self.handler = Mock()
+        self.handler = mock.Mock()
     def test_do_GET(self):
         pass
     def test_do_POST(self):
