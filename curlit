@@ -1,4 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+
+#
+
+function showhelp {
+	printf "gabbi-examples:\nOptions:\n\tlogin\n\tdashboard"
+}
+if [ -z $1 ]; then
+	showhelp
+fi
 echo $1
 case "$1" in
 	login)
@@ -10,4 +19,5 @@ case "$1" in
 		echo "Session $2"
 		curl -v -b "ci_session=$2" http://martynbristow.no-ip.org/Projects/bar-manager/index.php/dashboard
 		;;
+
 esac

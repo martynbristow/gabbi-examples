@@ -1,18 +1,18 @@
 # HTTP Testing with Gabbi by Example
 
-[Gabbi](http://gabbi.readthedocs.org) is a simple HTTP testing framework developed in Python, with tests written as simple YAML file, these tests can be extended with Python setUp and tearDown methods.
+[Gabbi](http://gabbi.readthedocs.org) is a simple HTTP testing framework developed in Python. Tests are written as simple YAML file and these tests can be extended with Python setUp and tearDown methods.
 
-I'm developing a Web Application, with a series of pages presenting data and reports, and a simple REST API.
-I needed to develop a set of functional end-to-end tests and learned about gabbi from a colleague, but the documentation is sparese, so I have written a tutorial and some examples.
+How this started ... I'm developing a Web Application, of reports and forms, with a simple REST API.
+I needed to develop a set of functional HTTP tests and learned about gabbi from a colleague, but the documentation is sparese, so I have written a tutorial and some examples to help get others started.
 The web app I have written is a POS manager [MyPOS](http://martynbristow.co.uk/wordpress/portfolio/mypos/) for the open source solutions ChromisPOS & UnicentaPOS.
 
-I hope they are of use to you, if I've missed something then please let me know, or submit a pull request.
-[Gabbi HTTP Testing](http://martynbristow.co.uk/wordpress/blog/gabbi-http-testing/)
+I hope they are of use to you, if I've missed something then please let me know, or submit a pull request.[Gabbi HTTP Testing](https://github.com/martynbristow/gabbi-examples)
+[Gabbi HTTP Testing](http://martynbristow.co.uk/wordpress/blog/gabbi-http-testing/) 
 
 This tutorial and examples are written to be fairly accesible, I don't assume you have much software testing experience or knowledge of Python to get started, but you will need to be famililar with working on the command line.
 
 ## Contents
- * samples - Some very simple tests
+ * samples - Simple HTTP tests againsts public web services (required an internet connection)
  * tutorials - This is an empty folder for you to store your tutorials in
  * api - Minimal set of tests to run against an API
 

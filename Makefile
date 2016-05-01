@@ -6,7 +6,7 @@
 ### markdown: sudo pip install markdown
 
 
-BUILD_DIR			= _build
+BUILD_DIR		:= _build
 
 SOURCES			:= $(wildcard *.md)
 OUTPUTS		    := $(SOURCES:.md=.html)
@@ -58,7 +58,10 @@ debug:
 install:
 	@echo "Installing dependancies to user directory"
 	pip install markdown --user
+	pip install gabbi --user
 
+tests:
+	curlit
 testmd:
 	@echo "Test Markdown is installed"
 	python -c "import markdown"
