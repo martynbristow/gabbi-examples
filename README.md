@@ -12,22 +12,29 @@ I hope they are of use to you, if I've missed something then please let me know,
 This tutorial and examples are written to be fairly accesible, I don't assume you have much software testing experience or knowledge of Python to get started, but you will need to be famililar with working on the command line.
 
 ## Contents
+
  * samples - Simple HTTP tests againsts public web services (required an internet connection)
  * tutorials - This is an empty folder for you to store your tutorials in
  * api - Minimal set of tests to run against an API
 
 ## Setting Up
+
 First you need to install the Gabbi package, the easiest way is through pip:
 `pip install gabbi --user`
 
 ## Tutorial
+
 ### Test
+
 We want to peform the following test:
 Check that the website [example.com](http://example.com) is a valid website.
-We want to open the following url and check that we are given a HTTP Success that the page exists
+We want to open the following url and check that we are given a HTTP Success that the page exists.
+
 ### Manual Test
+
 The following command will work on any linux or OSX system (with curl installed), you can alternatly just use a browser.
 `curl -v -oexample.com example.com`
+
 HTTP Headers
 ```
 > GET / HTTP/1.1

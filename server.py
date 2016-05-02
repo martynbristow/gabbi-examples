@@ -4,6 +4,7 @@ This is a simple HTTP server designed to be used with gabbi-examples
 It should only use the Python standard library to avoid needing to install dependancies
 Its not designed to server real websites, only a demonstration for testing
 """
+
 import BaseHTTPServer
 import cgi
 import random
@@ -12,6 +13,8 @@ import json
 import ConfigParser
 import Cookie
 import logging
+
+logging.basicConfig(filename='server.log', level=logging.DEBUG)
 
 MESSAGES = [
     "That's as maybe, it's still a frog.",
@@ -51,27 +54,29 @@ def load_settings(filename="settings.ini"):
     }
     settings['server']['port'] = int(settings['server']['port'])
     port = ":%s" % settings['server']['port'] if settings['server']['port'] else ""
-    settings['login_url'] = "http://%s%s/%s/login" % (settings['server']['host'], settings['server']['port'], settings['server']['prefix'])
+    prefix = "/%s" % settings['server']['prefix'] if settings['server']['prefix'] else ""
+    settings['login_url'] = "http://%s%s/%s/login" % (settings['server']['host'], port, prefix)
     settings['param'] = {'username': settings['auth']['admin_username'], 'password':  settings['auth']['admin_password']}
     return settings
 
 
-
-class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     """ HTTP Request Handler
    Add session http://michelanders.blogspot.co.uk/2011/10/managing-session-id-with-cookies.html
     """
 
-    def __init__(self):
-       super(Handler).__init__()
+    '''
+    def __init__(self, *args, **kwargs):
+        self.sessionidmorsel = None 
+        BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, *args,**kwargs)
+    '''
 
     def do_GET(self):
         """ Process a HTTP Get Request
         """
-
         uri = self.path.split('/')
         logging.debug('Requested URI: %s', uri)
-        if len(uri) == 1:
+        if self.path == "" or self.path == "/" or len(uri) == 1:
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
@@ -83,7 +88,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            page = ""
+            page = "PAGE"
             self.output = page
 
         elif uri[1] == "api":
@@ -115,8 +120,18 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.output = HTML % LOGIN_FORM
 
+        elif uri[1] == "~":
+            self.send_response(500)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.output = "Goodbye"
+            global shutdown
+            shutdown = True
+
         else:
-            self.send_error(404, HTML % ("File not found: %s" % self.path))
+            #self.send_error(404, HTML % ("File not found: %s" % self.path))
+            self.send_error(404, "%s" % ("File not found: %s" % self.path))
+            #self.end_headers()
             return
         
         try:
@@ -168,10 +183,24 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
                 print output
             finally:
                 sys.stdout = stdout # restore
+    def send_error(self, *args):
+        mimetype="text/html"
+        self.send_response(404)
+        self.send_header('Content-type',mimetype)
+        self.end_headers()
+        self.wfile.write("Sorry")
 
 if __name__ == '__main__':
     server_settings = load_settings()
-    httpd = BaseHTTPServer.HTTPServer(("127.0.0.1", server_settings['server']['port']), Handler)
-    logging.info("Serving content on port", server_settings['server']['port'])
-    httpd.serve_forever()
-    run()
+    httpd = BaseHTTPServer.HTTPServer(("127.0.0.1", server_settings['server']['port']), MyHandler)
+    logging.info("Serving content on port %s", server_settings['server']['port'])
+    shutdown=False
+    run_server = lambda: shutdown==False
+    while run_server():
+        try:
+            httpd.handle_request()
+        except KeyboardInterrupt:
+            print "\nGoodbye\n"
+            shutdown=True
+        #httpd.serve_forever()
+    #run()

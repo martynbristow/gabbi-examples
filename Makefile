@@ -5,7 +5,7 @@
 ## Requires
 ### markdown: sudo pip install markdown
 
-TESTS 			:= api.py samples.py webapp.py
+GABBI_TESTS 	:= api.py samples.py webapp.py
 UNITTESTS       := test_server.py
 BUILD_DIR		:= _build
 
@@ -16,9 +16,9 @@ REQUIREPIP      := markdown
 
 README          := README.md
 
-.PHONY: all docs install clean help debug $(SOURCES) tests
+.PHONY: all docs install clean help debug tests
 
-all: clean docs readme
+all: clean docs readme tests
 
 $(OUTPUTS): %.html: %.md 
 	@echo "Compiling:" $<
@@ -43,7 +43,6 @@ help:
 	@echo " debug     - See what will get compiled"
 	@echo " install   - Install dependancies locally"
 
-
 clean:
 	@echo "Cleaning localy built files:"
 	@rm -rf $(BUILD_DIR)
@@ -67,9 +66,12 @@ testmd:
 
 unittests:
 	python $(UNITTESTS)
+
 %.py:
 	@echo ""
-$(TESTS):%.py
+
+$(GABBI_TESTS):%.py
 	python $@
-tests: $(TESTS)
+
+tests: $(GABBI_TESTS)
 	
