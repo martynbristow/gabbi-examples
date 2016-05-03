@@ -46,8 +46,9 @@ help:
 clean:
 	@echo "Cleaning localy built files:"
 	@rm -rf $(BUILD_DIR)
-	@rm -rf $(SOURCE_DIR)/*.html
+	@rm -rf $(SOURCE_DIR)/*.html # This is a bit OTT but I have had html files built here by mistake
 	@rm -rf *.html
+	@rm -rf *.log
 
 debug:
 	@echo "INPUT_DOCS"

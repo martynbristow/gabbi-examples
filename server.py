@@ -55,6 +55,7 @@ def load_settings(filename="settings.ini"):
     settings['server']['port'] = int(settings['server']['port'])
     port = ":%s" % settings['server']['port'] if settings['server']['port'] else ""
     prefix = "/%s" % settings['server']['prefix'] if settings['server']['prefix'] else ""
+    settings['server_url'] = "http://%s%s" % (settings['server']['host'], port)
     settings['login_url'] = "http://%s%s/%s/login" % (settings['server']['host'], port, prefix)
     settings['param'] = {'username': settings['auth']['admin_username'], 'password':  settings['auth']['admin_password']}
     return settings
@@ -120,8 +121,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.output = HTML % LOGIN_FORM
 
-        elif uri[1] == "~":
-            self.send_response(500)
+        elif uri[1] == "shutdown":
+            self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.output = "Goodbye"
@@ -173,7 +174,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             c['value'] = "random"
             self.send_header('Set-Cookie', c.output(header=''))
             self.end_headers()
-            self.output = ""
+            self.output = "Welcome"
             try:
                 # redirect stdout to client
                 stdout = sys.stdout
@@ -183,6 +184,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 print output
             finally:
                 sys.stdout = stdout # restore
+
     def send_error(self, *args):
         mimetype="text/html"
         self.send_response(404)
@@ -194,13 +196,15 @@ if __name__ == '__main__':
     server_settings = load_settings()
     httpd = BaseHTTPServer.HTTPServer(("127.0.0.1", server_settings['server']['port']), MyHandler)
     logging.info("Serving content on port %s", server_settings['server']['port'])
+    print "Serving on %s" % server_settings['server_url']
+    print "Use Ctrl+c at the prompt to shutdown the server, or click on the power icon."
     shutdown=False
     run_server = lambda: shutdown==False
     while run_server():
         try:
             httpd.handle_request()
         except KeyboardInterrupt:
-            print "\nGoodbye\n"
+            print "\nShutting down server...\nGoodbye\n"
             shutdown=True
-        #httpd.serve_forever()
+    #httpd.serve_forever()
     #run()
